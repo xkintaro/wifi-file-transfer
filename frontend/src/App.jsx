@@ -1,11 +1,10 @@
 import 'kintaro-ui/src/root.css';
 import {
   KintaroTitle1, KintaroTitle2, KintaroTitle3,
-  KintaroTextBox1, KintaroTextBox2, KintaroTextBox3,
-  KintaroButton1, KintaroButton2, KintaroButton3, KintaroButton4,
-  KintaroButtonClose,
-  KintaroDescription, KintaroModal, KintaroFooter,
-  KintaroDivider1, KintaroAudioPlayer
+  KintaroTextBox1,
+  KintaroButton1, KintaroButton2, KintaroButton4,
+  KintaroDescription, KintaroModal, KintaroDivider1,
+  KintaroCheckBox
 } from 'kintaro-ui/src';
 
 import notfoundimage from '/404.png';
@@ -13,14 +12,10 @@ import overlay from '/2.png';
 import { useEffect, useState } from 'react';
 import './App.css';
 
-import { CiImageOn } from "react-icons/ci";
 import { CiVideoOn } from "react-icons/ci";
-import { FaRegFilePdf } from "react-icons/fa";
-import { FaFileArchive } from "react-icons/fa";
-
+import { FaRegFilePdf, FaFileArchive, FaRegEye } from "react-icons/fa";
 import { IoMdDownload } from "react-icons/io";
 import { MdDeleteForever } from "react-icons/md";
-import { FaRegEye } from "react-icons/fa";
 
 const API_URL = import.meta.env.VITE_FRONTEND_API_URL;
 
@@ -32,8 +27,80 @@ function App() {
   const [progress, setProgress] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [deleteAllModalVisible, setDeleteAllModalVisible] = useState(false);
   const [fileToDelete, setFileToDelete] = useState(null);
   const [fileSizes, setFileSizes] = useState({});
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [deleteSelectedModalVisible, setDeleteSelectedModalVisible] = useState(false);
+  const [downloadSelectedModalVisible, setDownloadSelectedModalVisible] = useState(false);
+
+  // Yeni yardımcı fonksiyonlar
+  const isImageFile = (filename) => {
+    return filename.match(/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i);
+  };
+
+  const getFileIcon = (filename) => {
+    if (filename.match(/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i)) return null; // Thumbnail göstereceğiz
+    if (filename.match(/\.(mp4|mov|avi|mkv|webm)$/i)) return <CiVideoOn />;
+    if (filename.match(/\.(pdf)$/i)) return <FaRegFilePdf />;
+    return <FaFileArchive />;
+  };
+
+  const toggleFileSelection = (filename) => {
+    setSelectedFiles(prev =>
+      prev.includes(filename)
+        ? prev.filter(f => f !== filename)
+        : [...prev, filename]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    setSelectedFiles(selectAll ? [] : [...filteredFiles]);
+    setSelectAll(!selectAll);
+  };
+
+  const handleDeleteSelected = async () => {
+    try {
+      const res = await fetch(`${API_URL}/delete-selected`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ files: selectedFiles })
+      });
+      if (res.ok) {
+        fetchFiles();
+        setSelectedFiles([]);
+        setSelectAll(false);
+      }
+    } catch (error) {
+      console.error('Delete selected error:', error);
+    }
+    setDeleteSelectedModalVisible(false);
+  };
+
+  const handleDownloadSelected = async () => {
+    try {
+      const res = await fetch(`${API_URL}/download-selected`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ files: selectedFiles })
+      });
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `downloads-${new Date().toISOString().slice(0, 10)}.zip`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error('Download selected error:', error);
+    }
+    setDownloadSelectedModalVisible(false);
+  };
 
   const fetchFiles = async () => {
     try {
@@ -41,19 +108,17 @@ function App() {
       const data = await res.json();
       setFiles(data);
       setFilteredFiles(data);
-
-      // Dosya boyutlarını al
       const sizes = {};
       await Promise.all(data.map(async (file) => {
-        const sizeRes = await fetch(`${API_URL}/file-info?name=${encodeURIComponent(file)}`);
-        if (sizeRes.ok) {
-          const sizeData = await sizeRes.json();
-          sizes[file] = formatFileSize(sizeData.size);
+        const res = await fetch(`${API_URL}/file-info?name=${encodeURIComponent(file)}`);
+        if (res.ok) {
+          const info = await res.json();
+          sizes[file] = formatFileSize(info.size);
         }
       }));
       setFileSizes(sizes);
     } catch (error) {
-      console.error('Dosyalar alınırken hata:', error);
+      console.error('Fetch files error:', error);
     }
   };
 
@@ -67,31 +132,15 @@ function App() {
 
   const handleSearch = (term) => {
     setSearchTerm(term);
-    if (term === '') {
-      setFilteredFiles(files);
-    } else {
-      const filtered = files.filter(file =>
-        file.toLowerCase().includes(term.toLowerCase())
-      );
-      setFilteredFiles(filtered);
-    }
+    setFilteredFiles(term ? files.filter(f => f.toLowerCase().includes(term.toLowerCase())) : files);
   };
 
   const handleDelete = async (filename) => {
     try {
-      const response = await fetch(`${API_URL}/delete/${filename}`, {
-        method: 'DELETE'
-      });
-
-      if (response.ok) {
-        fetchFiles();
-      } else {
-        console.error('Dosya silinemedi');
-        const errorData = await response.json();
-        console.error('Hata detayı:', errorData);
-      }
+      const res = await fetch(`${API_URL}/delete/${filename}`, { method: 'DELETE' });
+      if (res.ok) fetchFiles();
     } catch (error) {
-      console.error('Silme işlemi sırasında hata:', error);
+      console.error('Delete error:', error);
     }
     setModalVisible(false);
   };
@@ -99,25 +148,17 @@ function App() {
   const handleUpload = async (e) => {
     e.preventDefault();
     if (uploadFiles.length === 0) return;
-
     setIsUploading(true);
     setProgress(0);
-
     const formData = new FormData();
-    uploadFiles.forEach(file => {
-      formData.append('files', file);
-    });
-
+    uploadFiles.forEach(file => formData.append('files', file));
     try {
       const xhr = new XMLHttpRequest();
-
       xhr.upload.onprogress = (event) => {
         if (event.lengthComputable) {
-          const percentComplete = Math.round((event.loaded / event.total) * 100);
-          setProgress(percentComplete);
+          setProgress(Math.round((event.loaded / event.total) * 100));
         }
       };
-
       xhr.open('POST', `${API_URL}/upload`);
       xhr.onload = () => {
         if (xhr.status === 200) {
@@ -128,20 +169,16 @@ function App() {
       };
       xhr.send(formData);
     } catch (error) {
-      console.error('Yükleme hatası:', error);
+      console.error('Upload error:', error);
       setIsUploading(false);
     }
   };
 
-  const handleFileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    setUploadFiles(selectedFiles);
-  };
-
+  const handleFileChange = (e) => setUploadFiles(Array.from(e.target.files));
   const removeFileFromList = (index) => {
-    const newFiles = [...uploadFiles];
-    newFiles.splice(index, 1);
-    setUploadFiles(newFiles);
+    const updated = [...uploadFiles];
+    updated.splice(index, 1);
+    setUploadFiles(updated);
   };
 
   useEffect(() => {
@@ -150,15 +187,51 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    window.onerror = function (msg, url, lineNo, columnNo, error) {
-      alert(`⚠️ JS Hatası: ${msg}\nSatır: ${lineNo}:${columnNo}`);
-      return false;
-    };
-  }, []);
-
   return (
     <div className="kintaro-ui-container">
+      <KintaroModal
+        isOpen={deleteSelectedModalVisible}
+        onClose={() => setDeleteSelectedModalVisible(false)}
+        title={`Delete ${selectedFiles.length} Files`}
+      >
+        <KintaroDescription
+          text={`Are you sure you want to delete ${selectedFiles.length} selected files? This action cannot be undone.`}
+        />
+        <div className="kintaro-modal-footer">
+          <KintaroButton2
+            title={"Cancel"}
+            onClick={() => setDeleteSelectedModalVisible(false)}
+          />
+          <KintaroButton1
+            title={"Delete Selected"}
+            onClick={handleDeleteSelected}
+            bgColor={"var(--kintaro-error-color)"}
+            hoverColor={"var(--kintaro-error-color-transparent)"}
+          />
+        </div>
+      </KintaroModal>
+
+      <KintaroModal
+        isOpen={downloadSelectedModalVisible}
+        onClose={() => setDownloadSelectedModalVisible(false)}
+        title={`Download ${selectedFiles.length} Files`}
+      >
+        <KintaroDescription
+          text={`You are about to download ${selectedFiles.length} files. This may take some time depending on file sizes.`}
+        />
+        <div className="kintaro-modal-footer">
+          <KintaroButton2
+            title={"Cancel"}
+            onClick={() => setDownloadSelectedModalVisible(false)}
+          />
+          <KintaroButton1
+            title={"Download Selected"}
+            onClick={handleDownloadSelected}
+            bgColor={"var(--kintaro-success-color)"}
+            hoverColor={"var(--kintaro-success-color-transparent)"}
+          />
+        </div>
+      </KintaroModal>
 
       <div className="kintaro-ui-hero">
         <div className="hero-main">
@@ -167,7 +240,13 @@ function App() {
             text={"Share files with devices on the same network"}
           />
           <form onSubmit={handleUpload} className="kwherobtns">
-            <label className="kintaro-button-reset kintaro-button-2" style={{ border: '1px solid var(--kintaro-accent-color-1)', '--kintaro-custom-hover': 'var(--kintaro-accent-color-1)', }}>
+            <label
+              className="kintaro-button-reset kintaro-button-2"
+              style={{
+                border: '1px solid var(--kintaro-accent-color-1)',
+                '--kintaro-custom-hover': 'var(--kintaro-accent-color-1)',
+              }}
+            >
               {uploadFiles.length > 0 ? `${uploadFiles.length} files selected` : 'Select Files'}
               <input
                 type="file"
@@ -205,7 +284,7 @@ function App() {
             </div>
           )}
         </div>
-        <img src={overlay} alt="" className="hero-overlay" />
+        <img src={overlay} alt="hero-overlay" className="hero-overlay" />
       </div>
 
       <KintaroDivider1 />
@@ -214,36 +293,71 @@ function App() {
         <div className="ui-group">
           <div className="kintaro-ui-item">
             <div className="item-head">
-              <KintaroTitle2 title={"Files"} />
-              <div className="txtbx-hedd">
-                <input
-                  type="text"
-                  className="kintaro-txtbox-1-textbox"
-                  placeholder='Search File'
-                  style={{ height: '45px' }}
-                  value={searchTerm}
-                  onChange={(e) => handleSearch(e.target.value)}
-                />
+              <div className="item-head-titlee">
+                {filteredFiles.length > 0 && (
+                  <KintaroCheckBox
+                    checked={selectAll}
+                    onChange={toggleSelectAll}
+                    title=""
+                  />
+                )}
+                <KintaroTitle2 title={`Files${filteredFiles.length > 0 ? `: ${filteredFiles.length}` : ''}`} />
               </div>
+              {filteredFiles.length > 0 && (
+                <div className="txtbx-hedd">
+                  <KintaroTextBox1
+                    type="text"
+                    title='Search File'
+                    height={"45px"}
+                    width={"300px"}
+                    value={searchTerm}
+                    onChange={(e) => handleSearch(e.target.value)}
+                  />
+                </div>
+              )}
             </div>
+
             {filteredFiles.length > 0 ? (
               <div className="item-main">
-                {filteredFiles.map((file) => (
+                {filteredFiles.map((file, index) => (
                   <div key={file} className="item-box">
                     <div className="item-box-head">
+                      <KintaroCheckBox
+                        checked={selectedFiles.includes(file)}
+                        onChange={() => toggleFileSelection(file)}
+                        title=""
+                      />
+                      <span className="file-number">{index + 1}</span>
                       <div className="item-icon">
-                        {file.match(/\.(jpg|jpeg|png|gif)$/i) ? <CiImageOn /> :
-                          file.match(/\.(mp4|mov|avi)$/i) ? <CiVideoOn /> :
-                            file.match(/\.(pdf)$/i) ? <FaRegFilePdf /> : <FaFileArchive />}
+                        {isImageFile(file) ? (
+                          <a
+                            href={`${API_URL}/view/${file}`}
+                            title={file}
+                            target='_blank'
+                            rel="noreferrer"
+                          >
+                            <img
+                              src={`${API_URL}/view/${file}`}
+                              alt="thumbnail"
+                              className="file-thumbnail"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = notfoundimage;
+                              }}
+                            />
+                          </a>
+                        ) : (
+                          getFileIcon(file)
+                        )}
                       </div>
 
                       <a
-                        href={`${API_URL}/uploads/${file}`}
+                        href={`${API_URL}/view/${file}`}
                         title={file}
                         target='_blank'
                         rel="noreferrer"
                       >
-                        <KintaroDescription text={file} maxLength={"50"} />
+                        <KintaroDescription text={file} maxLength={"40"} showToggleButton={false} />
                       </a>
                       <KintaroDescription text={"(" + fileSizes[file] + ")" || 'Loading...'} maxLength={"999"} />
                     </div>
@@ -280,7 +394,7 @@ function App() {
                         <MdDeleteForever />
                       </button>
                       <a
-                        href={`${API_URL}/uploads/${file}`}
+                        href={`${API_URL}/view/${file}`}
                         target="_blank"
                         rel="noreferrer"
                         className="view-button item-actions-btn"
@@ -288,8 +402,9 @@ function App() {
                       >
                         <FaRegEye />
                       </a>
+
                       <a
-                        href={`${API_URL}/uploads/${file}`}
+                        href={`${API_URL}/download/${file}`}
                         download
                         className="download-button item-actions-btn"
                         title='Download File'
@@ -307,10 +422,27 @@ function App() {
               </div>
             )}
           </div>
+          <div className="fter-btnsss">
+            {selectedFiles.length > 0 && (
+              <div className='fter-btnsss-rightt'>
+                <KintaroButton4
+                  title={`Delete (${selectedFiles.length})`}
+                  onClick={() => setDeleteSelectedModalVisible(true)}
+                  color="var(--kintaro-error-color)"
+                  hoverColor="var(--kintaro-error-color-transparent)"
+                />
+                <KintaroButton4
+                  title={`Download (${selectedFiles.length})`}
+                  onClick={() => setDownloadSelectedModalVisible(true)}
+                  color="var(--kintaro-success-color)"
+                  hoverColor="var(--kintaro-success-color-transparent)"
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
-    </div>
+    </div >
   );
 }
 

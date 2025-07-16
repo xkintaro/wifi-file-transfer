@@ -30,6 +30,10 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_FRONTEND_API_URL,
           changeOrigin: true,
         },
+        '/download': {
+          target: env.VITE_FRONTEND_API_URL,
+          changeOrigin: true,
+        },
       }
     },
     define: {

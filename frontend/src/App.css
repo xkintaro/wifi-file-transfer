@@ -87,8 +87,16 @@
             justify-content: space-between;
         }
 
+        .item-head-titlee {
+            display: flex;
+            align-items: center;
+            gap: var(--kintaro-gap-sm);
+        }
+
         .txtbx-hedd {
-            max-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: var(--kintaro-gap-sm);
         }
 
         .item-main {
@@ -96,7 +104,8 @@
             display: flex;
             flex-direction: column;
             gap: var(--kintaro-gap-sm);
-
+            max-height: 450px;
+            overflow: auto;
         }
 
         .empty-kw-file {
@@ -126,13 +135,21 @@
         .item-box-head {
             display: flex;
             gap: var(--kintaro-gap-xs);
-
+            align-items: center;
         }
+
+        .file-number {
+            color: var(--kintaro-text-color-1);
+            font-size: var(--kintaro-font-md);
+        }
+
 
         .item-icon {
             color: var(--kintaro-text-color-1);
-            font-size: var(--kintaro-font-lg);
+            font-size: var(--kintaro-font-xl);
+            margin-left: 10px;
         }
+
 
         .item-actions {
             display: flex;
@@ -222,4 +239,71 @@
 
         .file-input {
             display: none;
+        }
+
+        /* Checkbox styling */
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--kintaro-accent-color-1);
+        }
+
+        /* Action buttons container */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        /* Selected count indicator */
+        .selected-count {
+            font-size: 14px;
+            color: var(--kintaro-accent-color-1);
+
+        }
+
+        .fter-btnsss {
+            width: 100%;
+            justify-content: flex-end;
+            display: flex;
+            align-items: center;
+        }
+
+        .fter-btnsss-rightt {
+            display: flex;
+            gap: var(--kintaro-gap-sm);
+            align-items: center;
+        }
+
+        .file-thumbnail {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: var(--kintaro-box-shadow);
+
+        }
+
+        .item-icon img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+
+        @media (max-width: 768px) {
+            .item-box {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--kintaro-gap-sm);
+                border-bottom: 1px solid var(--kintaro-border);
+            }
+
+            .item-box:last-child {
+                border: none;
+            }
+
+            .item-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
         }
