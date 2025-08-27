@@ -1,11 +1,13 @@
 @echo off
-echo Backend ve Frontend başlatılıyor...
-echo -------------------------------
+title Frontend + Backend Starter
 
-REM Backend başlatılıyor
-start cmd /k "cd backend && node index.js"
-
-REM Frontend başlatılıyor
+echo Frontend...
 start cmd /k "cd frontend && npm run dev"
 
-echo Tüm servisler başlatıldı.
+echo Backend...
+start cmd /k "cd backend && node index.js"
+
+echo ============================
+echo all services started!
+echo ============================
+pause

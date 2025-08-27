@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       host: true,
-      port: parseInt(env.VITE_FRONTEND_PORT) || 5173,
+      port: parseInt(env.VITE_FRONTEND_PORT),
       proxy: {
         '/upload': {
           target: env.VITE_FRONTEND_API_URL,
