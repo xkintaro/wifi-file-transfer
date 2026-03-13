@@ -42,7 +42,7 @@ View or listen to your files directly in the browser before downloading:
 - **Video & Audio**: `MP4`, `WEBM`, `MP3`
 - **Documents**: Built-in support for `PDF`, `TXT`, and `HTML`.
 
-<img src="md/20260311100927226.jpg" width="100%" style="border-radius: 8px;" />
+<img src="md/20260311100927226.jpg" width="auto" style="border-radius: 8px;" />
 
 ## <a id="tech"></a>🛠️ Technologies
 
