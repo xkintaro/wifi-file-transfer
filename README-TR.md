@@ -122,7 +122,7 @@ Uygulamayı şu adreste açın: [http://localhost:5076](http://localhost:5076). 
 
 <img src="md/20260311100927157.jpg" width="100%" />
 
-<p align="center"><img src="md/20260311100927226.jpg" /></p>
+<img src="md/20260311100927226.jpg" />
 
 ## <a id="license"></a> 📄 Lisans
 
