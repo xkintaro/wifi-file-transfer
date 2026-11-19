@@ -1,20 +1,20 @@
 <a href="README.md">
- <img src="https://img.shields.io/badge/Language-English-blue?style=flat-square&logo=google-translate&logoColor=white" alt="English">
+  <img src="https://img.shields.io/badge/Language-English-blue?style=flat-square&logo=google-translate&logoColor=white" alt="English">
 </a>
 <a href="README-TR.md">
- <img src="https://img.shields.io/badge/Dil-Türkçe-red?style=flat-square&logo=google-translate&logoColor=white" alt="Türkçe">
+  <img src="https://img.shields.io/badge/Language-Türkçe-red?style=flat-square&logo=google-translate&logoColor=white" alt="Türkçe">
 </a>
 
   <br />
   <br />
 
 <div align="center">
-  <img src="md/logo.png" width="120" height="120" />
+  <img src="mascot.png" width="120" height="120" />
   <br />
   <br />
 
   <p>
-    Hızlı ve kullanımı kolay, local web tabanlı bir WiFi dosya transfer aracı.
+     Cihazlar arasında Wi-Fi üzerinden dosya aktaran web tabanlı bir araç.
   </p>
 
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
@@ -25,130 +25,108 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
 
   <p>
+    <a href="#about">Hakkında</a> •
     <a href="#features">Özellikler</a> •
-    <a href="#technologies">Teknolojiler</a> •
-    <a href="#installation">Kurulum</a> •
-    <a href="#license">Lisans</a> •
-    <a href="#gallery">Galeri</a>
+    <a href="#tech">Teknolojiler</a> •
+    <a href="#setup">Kurulum</a> •
+    <a href="#gallery">Galeri</a> •
+    <a href="#license">Lisans</a>
   </p>
 
   <br />
   <br />
 </div>
 
-## 📋 Hakkında
+## <a id="about"></a> 📋 Hakkında
 
-**Kintaro WiFi File Transfer**, aynı local ağ üzerindeki cihazlar arasında dosya paylaşımını zahmetsiz hale getirmek için tasarlanmış modern, web tabanlı bir araçtır. Dosyalarınızı bilgisayarınızdan telefonunuza veya tam tersi şekilde taşıyor olun, bu araç kablolara veya harici cloud servislerine gerek duymadan seamless (kesintisiz) bir transfer sağlar.
+**WiFi File Transfer**, aynı ağdaki cihazlar arasında dosya paylaşmak için hazırlanmış bir web uygulamasıdır. Uygulamayı bilgisayarınızda çalıştırıp telefonunuz gibi başka bir cihazın tarayıcısından açarsınız, böylece kablo ya da bulut hizmeti olmadan dosyaları iki yönde de aktarabilirsiniz.
 
-<img src="md/20260311100927157.jpg" width="100%"  />
+Backend Express ile yazılmıştır ve dosyaları bilgisayarınızdaki `uploads` klasöründe tutar. Arayüz ise React ve kendi [Kintaro UI](https://github.com/xkintaro/kintaro-ui) kütüphanemle hazırlanmıştır.
 
-## <a id="features"></a>✨ Özellikler
+## <a id="features"></a> ✨ Özellikler
 
-### Hızlı WiFi Transferi
+- **Çoklu yükleme**: Birçok dosyayı tek seferde seçip yükleyin ve ilerlemesini takip edin.
+- **Temiz dosya adları**: Dosya adlarındaki Türkçe karakterler ve geçersiz semboller temizlenir, adlara yükleme zamanı eklenir.
+- **Tarayıcıda önizleme**: Görselleri, videoları, ses dosyalarını, PDF'leri ve metin dosyalarını doğrudan tarayıcıda açın. Görseller listede küçük önizlemeler olarak da gösterilir.
+- **Toplu işlemler**: Birden fazla dosya seçip tarihli bir ZIP arşivi olarak indirin ya da silin.
+- **Tekli dosya işlemleri**: Herhangi bir dosyayı tek tıkla indirin ya da silin.
 
-Local ağınıza bağlı herhangi bir cihaz arasında dosyaları anında transfer edin. Kablo yok, bluetooth eşleştirmesi yok, sadece WiFi üzerinden tam hız.
+## <a id="tech"></a> 🛠️ Teknolojiler
 
-### Gelişmiş Dosya Yönetimi
+`React` · `Vite` · `Kintaro UI` · `React Icons` · `CSS` · `Node.js` · `Express` · `Multer` · `Archiver`
 
-- **Batch Uploads**: Aynı anda birden fazla dosyayı sürükleyip bırakın (drag and drop).
-- **Batch Operations**: Birden fazla dosyayı tek bir **ZIP** arşivi olarak indirmek veya toplu silmek için seçin.
-- **Auto-Sanitization**: Dosya adları, cross-platform uyumluluğu için Türkçe karakterlerden ve geçersiz sembollerden otomatik olarak temizlenir.
-
-### Kesintisiz Medya Önizleme (Media Preview)
-
-İndirmeden önce dosyalarınızı doğrudan tarayıcıda (browser) görüntüleyin veya dinleyin:
-
-- **Görseller**: `JPG`, `PNG`, `GIF`, `WEBP`
-- **Video & Ses**: `MP4`, `WEBM`, `MP3`
-- **Dokümanlar**: `PDF`, `TXT` ve `HTML` için built-in destek.
-
-## <a id="technologies"></a>🛠️ Teknolojiler
-
-Proje, modern bir full-stack JavaScript mimarisi kullanmaktadır:
-
-### Frontend
-
-- **React 19**: Son derece responsive bir UI için en son React özellikleri.
-- **Vite**: Ultra hızlı build tool ve development server.
-- **Axios**: API iletişimi için güçlü bir HTTP client.
-- **React Icons**: Şık bir görünüm için kapsamlı icon library.
-
-### Backend
-
-- **Node.js**: Ölçeklenebilir runtime environment.
-- **Express**: API için minimalist web framework.
-- **Multer**: Multi-part dosya yüklemelerini yönetmek için middleware.
-- **Archiver**: Batch indirmeler için on-the-fly ZIP oluşturma.
-
-## 🚀 Kurulum <a id="installation"></a>
-
-Projeyi local environment'ınızda çalıştırmak için aşağıdaki adımları takip edin.
+## <a id="setup"></a> 🚀 Kurulum
 
 ### Gereksinimler
 
-- **Node.js** (v18+)
-- **npm**
+- **Node.js 18 veya üzeri**
 
 ### Adım Adım Kurulum
 
-1.  **Repository'yi Klonlayın**
+1. **Depoyu klonlayın**
 
-    ```bash
-    git clone https://github.com/xkintaro/wifi-file-transfer.git
-    cd wifi-file-transfer
-    ```
+   ```bash
+   git clone https://github.com/xkintaro/wifi-file-transfer.git
+   cd wifi-file-transfer
+   ```
 
-2.  **Backend Dependency'lerini Yükleyin**
+2. **Bağımlılıkları yükleyin**
 
-    ```bash
-    cd backend
-    npm install
-    ```
+   ```bash
+   cd backend
+   npm install
+   cd ../frontend
+   npm install
+   ```
 
-3.  **Frontend Dependency'lerini Yükleyin**
+   Windows'ta bunun yerine `install-dependencies.bat` dosyasını çalıştırabilirsiniz.
 
-    ```bash
-    cd ../frontend
-    npm install
-    ```
+3. **Ortam ayarlarını kontrol edin**
 
-4.  **Environment Konfigürasyonu**  
-    Her iki klasördeki `.env` dosyalarının konfigüre edildiğinden emin olun.
+   Portlar ve API adresi `.env` dosyalarında ayarlanır.
 
-    **backend/.env**
+   **backend/.env**
 
-    ```
-    VITE_BACKEND_PORT=5077
-    ```
+   ```
+   VITE_BACKEND_PORT=5077
+   ```
 
-    **frontend/.env**
+   **frontend/.env**
 
-    ```
-    VITE_FRONTEND_API_URL=http://localhost:5077
-    VITE_FRONTEND_PORT=5076
-    ```
+   ```
+   VITE_FRONTEND_API_URL=http://localhost:5077
+   VITE_FRONTEND_PORT=5076
+   ```
 
-5.  **Backend Server'ı Başlatın**
+   Uygulamayı başka bir cihazdan kullanmak için `VITE_FRONTEND_API_URL` içindeki `localhost` yerine bilgisayarınızın yerel IP adresini yazın, örneğin `http://192.168.1.10:5077`.
 
-    ```bash
-    cd ../backend
-    node index.js
-    ```
+4. **Backend'i ve frontend'i başlatın**
 
-6.  **Frontend Server'ı Başlatın**
-    Yeni bir terminal açın:
-    ```bash
-    cd frontend
-    npm run dev
-    ```
+   Her birini ayrı bir terminalde başlatın.
 
-## 📄 Lisans <a id="license"></a>
+   ```bash
+   cd backend
+   node index.js
+   ```
 
-Bu proje MIT Lisansı ile lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasını inceleyebilirsiniz.
+   ```bash
+   cd frontend
+   npm run dev
+   ```
 
-## 🖼️ Galeri <a id="gallery"></a>
+   Windows'ta bunun yerine `run.bat` dosyasını çalıştırabilirsiniz.
 
-<img src="md/20260311100927226.jpg" width="auto"  />
+Uygulamayı şu adreste açın: [http://localhost:5076](http://localhost:5076). Başka bir cihazda aynı portu bilgisayarınızın IP adresiyle açın.
+
+## <a id="gallery"></a> 🖼️ Galeri
+
+<img src="md/20260311100927157.jpg" width="100%" />
+
+<p align="center"><img src="md/20260311100927226.jpg" /></p>
+
+## <a id="license"></a> 📄 Lisans
+
+Bu proje MIT Lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakabilirsiniz.
 
 #
 
