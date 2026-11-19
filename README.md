@@ -114,7 +114,7 @@ The backend is built with Express and keeps the files in the `uploads` folder on
    npm run dev
    ```
 
-   On Windows you can run `run.bat` instead.
+   On Windows you can run `run.bat` instead. To start both in the background, run `run-wifi-file-transfer.vbs`. It starts the app from the `C:\wifi-file-transfer` folder, so clone the project there to use it. To start the app automatically when Windows starts, press `Win+R`, type `shell:startup` and put a shortcut to `run-wifi-file-transfer.vbs` in the folder that opens.
 
 Open the app at [http://localhost:5076](http://localhost:5076). On another device, open the same port with the IP address of your computer.
 

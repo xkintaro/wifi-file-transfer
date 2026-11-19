@@ -114,7 +114,7 @@ Backend Express ile yazılmıştır ve dosyaları bilgisayarınızdaki `uploads`
    npm run dev
    ```
 
-   Windows'ta bunun yerine `run.bat` dosyasını çalıştırabilirsiniz.
+   Windows'ta bunun yerine `run.bat` dosyasını çalıştırabilirsiniz. İkisini arka planda başlatmak için `run-wifi-file-transfer.vbs` dosyasını çalıştırın. Bu dosya uygulamayı `C:\wifi-file-transfer` klasöründen başlatır, bu yüzden kullanmak için projeyi bu klasöre klonlayın. Uygulamanın Windows açılırken otomatik başlaması için `Win+R` tuşlarına basın, `shell:startup` yazın ve açılan klasöre `run-wifi-file-transfer.vbs` dosyasının kısayolunu koyun.
 
 Uygulamayı şu adreste açın: [http://localhost:5076](http://localhost:5076). Başka bir cihazda aynı portu bilgisayarınızın IP adresiyle açın.
 
